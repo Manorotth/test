@@ -1,0 +1,31 @@
+127.0.0.1	localhost projects
+127.0.1.1	mbourgui-dell.fr.lan	mbourgui-dell
+10.32.0.190     supervision.itx2.syl.wan
+10.32.0.114     shinken.itx2.syl.wan opsjtpweb.itx2.syl.wan
+10.32.0.250     spvrxtx-broker-1.itx2.syl.wan
+10.32.0.110     ctl-dashboard.itx2.syl.wan
+10.32.0.12      access
+10.32.0.238     spvrxtx-graph.itx2.syl.wan
+172.16.0.141    irc.ymagis.com
+172.20.10.52    wiki.ymagis.com
+172.16.0.149    support2.trac.ymagis.com     
+193.105.225.55  cirque.ymagis.com
+10.32.0.122     ctl-elasticsearch-1.itx2.syl.wan
+10.32.0.123     elasticsearch-3.itx2.syl.wan
+172.16.0.58     filer.frymghq.ymagis.com
+10.32.0.252     dashboard-support1.itx2.syl.wan
+10.32.0.130     elasticsearch-master-1.itx2.syl.wan
+185.29.36.3     openvpn-1.ymagis.com
+85.118.49.42    openvpn-2.ymagis.com
+172.20.10.98    jira.ymagis.com
+198.27.92.1     www.ovh.com
+10.32.0.30      puppet-rxtx.itx2.syl.wan
+172.20.10.98    confluence.ymagis.com
+172.18.129.102  zabbix.ymagis.net
+172.20.10.36    sarah.ymagis.net
+172.18.129.91   bind
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
