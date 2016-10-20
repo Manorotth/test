@@ -1,0 +1,33 @@
+##Those settings are used to generate url per distrib per release per machine type per rank
+
+##exemple : /ubuntu/precise/test/tcs
+
+## Once done the url are matched with snapshot date
+
+##Main snapshot base dir
+SNAPSHOT_DIR="/var/spool/apt-mirror/snapshot"
+
+##Distribution per Machine type
+declare -A DISTRIB_PER_MACHINE=(
+["orc"]="debian"
+["wks"]="ubuntu"
+["tms"]="ubuntu"
+["yms"]="ubuntu"
+["tcs"]="ubuntu"
+["lms"]="ubuntu"
+["vgw"]="ubuntu"
+["dsm"]="debian"
+["yfs"]="ubuntu"
+)
+
+##Release codename per distribution
+UBUNTU_RELEASE_LIST=(lucid oneiric precise)
+DEBIAN_RELEASE_LIST=(squeeze wheezy jessie)
+
+##Snapshot date per distrib per rank
+UBUNTU_DATE_TEST="2016/10/12_0952"
+UBUNTU_DATE_PREPROD="2016/02/22_1819"
+UBUNTU_DATE_PROD="2016/02/22_1819"
+DEBIAN_DATE_TEST="2016/10/14_1628"
+DEBIAN_DATE_PREPROD="2016/02/22_1819"
+DEBIAN_DATE_PROD="2016/02/22_1819"
