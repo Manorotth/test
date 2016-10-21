@@ -3,12 +3,22 @@
 ##This script generate an apache site conf that match vhost aliases with snapshot repo
 ##The main input is the snapshot .conf file 
 ##The differents steps (see also main):
+# with --safetest :
+# 1/ create a test conf
+# 2/ validate it
+
+# with --push2prod
 # 1/ create a test conf
 # 2/ validate it
 # 3/ backup prod conf 
 # 4/ apply to prod
-
-
+arg=$1
+if [[ ! $arg ]]; then
+	echo "argument expected : "
+	echo "  --safetest   => apply a dedicated test conf without impacting production"	
+	echo "  --push2prod  => apply a dedicated test conf and deploy to prod conf if test is validated "
+	exit
+fi
 
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
@@ -96,6 +106,7 @@ function validate_apache {
 local site=$1
 a2ensite $site.conf
 service apache2 reload
+echo "Generated URLs "
 for i in $(cat /etc/apache2/sites-enabled/$site.conf | grep Alias | awk '{print $2}')
 do
 	if wget -q --spider http://debian.ymagis.net:8008$i; then
@@ -110,6 +121,32 @@ do
 		exit
 	fi
 done
+
+
+##Real orchestra prod apt conf
+declare -a REAL_PROD_URL=(	
+http://debian.ymagis.net:8008/debian/prod/wheezy/orc
+http://debian.ymagis.net:8008/debian/prod/wheezy/orc
+http://debian.ymagis.net:8008/debian/prod/wheezy/orc
+http://debian.ymagis.net:8008/debian-security/prod/wheezy/orc
+)
+
+echo "Real prod URLs : "
+for produrl in ${REAL_PROD_URL[*]}
+do
+	if ! wget -q --spider $produrl; then
+		checkurl=0
+                echo "$produrl => OK"
+        else
+                checkurl=1
+                echo "==========="
+                echo "ERROR |  $produrl"
+                echo "==========="
+                return $checkurl
+                exit
+        fi
+done
+
 return $checkurl 
 } 
 
@@ -126,23 +163,31 @@ cp -a /usr/local/src/repo-snapshots/snapshot.conf $BACKUP_DIR/snapshot.conf_$(da
 
 
 function main {
-##1st : create a test conf and validate it
-##2nd : if test is validated push to prod
-#1/
+local mode=$1
+#Create a test conf and validate it with --safetest option
+#if test is validated push to prod with --push2prod option only
 testing_value="repo-snapshots-test-for-validation"
 push2prod_value="repo-snapshots"	
- #1/
-configure_apache $testing_value
-if validate_apache $testing_value; then
-#2
-	echo "======================"
-	echo TEST VALIDATED
-	echo "======================"
-	backup_prod $push2prod_value
-	#configure_apache $push2prod_value
-	#validate_apache $push2prod_value
+if [[ $mode == "--safetest" ]]; then
+	configure_apache $testing_value
+	if validate_apache $testing_value; then
+		echo "======================"
+		echo TEST VALIDATED
+		echo "======================"
+	fi
+elif [[ $mode == "--push2prod" ]]; then	
+	configure_apache $testing_value
+        if validate_apache $testing_value; then
+                echo "======================"
+                echo TEST VALIDATED
+                echo "======================"
+                echo "push to prod after validation check"
+                        backup_prod $push2prod_value
+                        configure_apache $push2prod_value
+                        validate_apache $push2prod_value
+	fi
 fi
 }
 
-main
+main $arg
 
